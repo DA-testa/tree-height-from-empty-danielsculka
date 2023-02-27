@@ -2,41 +2,51 @@
 
 import sys
 import threading
-import numpy as np
-from collections import namedtuple
+# import numpy as np
+# from collections import namedtuple
 
-Node = namedtuple("Node", ["node", "parent" , "height"])
+# Node = namedtuple("Node", "node parent height")
+
+class Node:
+  def __init__(self, node, parent):
+    self.node = node
+    self.parent = parent
+    self.height = 0
 
         
 def compute_height(n, parents):
     for i in range(n-1):
         el = parents[i]
 
-        if el[2] != 0:
+        if el.height != 0:
             continue
-        el[2] = 1
+        el.height = 1
 
-        path = np.array([el])
+        # path = np.array([el])
+        path = [el]
         node_height = 1
-        while el[1] != -1:
-            parent = parents[el[1]]
+        while el.parent != -1:
+            parent = parents[el.parent]
 
-            if parent[2] != 0:
-                el[2] = parent[2] + 1
-                node_height = node_height + el[2] - 1
+            if parent.height != 0:
+                el.height = parent.height + 1
+                node_height = node_height + el.height - 1
                 break
             
             el = parent
-            el[2] = 1
-            path = np.concatenate((path, [el]))
+            # el =  = 1
+            # path = np.concatenate((path, [el]))
+            path.append(el)
             node_height += 1
             
         for p in path:
-            el = parents[p[0]]
-            el[2] = node_height
+            el = parents[p.node]
+            el.height = node_height
             node_height -= 1
     
-    return np.max(np.array([p[2] for p in parents]))
+    # return np.max(np.array([p[2] for p in parents]))
+    return max([p.height for p in parents])
+
 
 
 def main():
@@ -46,7 +56,8 @@ def main():
 
     if 'I' in inputType:
         nodeCount = int(input())
-        elements = np.array([Node(ix, int(x), 0) for ix, x in enumerate(input().split(" "))])
+        # elements = np.array([Node(ix, int(x), 0) for ix, x in enumerate(input().split(" "))])
+        elements = [Node(ix, int(x)) for ix, x in enumerate(input().split(" "))]
     elif 'F' in inputType:
         fileName = input()
 
@@ -55,7 +66,8 @@ def main():
         
         with open("./test/%s" % (fileName), "r") as file:
             nodeCount = int(file.readline())
-            elements = np.array([Node(ix, int(x), 0) for ix, x in enumerate(file.readline().split(" "))])
+            elements = [Node(ix, int(x)) for ix, x in enumerate(file.readline().split(" "))]
+            # elements = np.array([Node(ix, int(x), 0) for ix, x in enumerate(file.readline().split(" "))])
     
     if nodeCount == -1:
         return
