@@ -2,23 +2,83 @@
 
 import sys
 import threading
+import numpy as np
+from collections import namedtuple
+
+Node = namedtuple("Node", ["node", "parent" , "height"])
+
 
 
 def compute_height(n, parents):
-    # Write this function
     max_height = 0
-    # Your code here
-    return max_height
+
+    for i in range(n-1):
+        node_height = 1
+        el = parents[i]
+        
+        if el[2] != 0:
+            continue
+
+        if parents[el[1]][2] != 0 :
+            el[2] = parents[el[1]][2]
+        
+        el[2] = node_height
+
+
+        while el[1] != -1:
+            el = parents[el[1]]
+            if el[2] != 0:
+                break
+            node_height += 1
+            el[2] = node_height
+    
+    return np.max(np.array([p[2] for p in parents]))
+
+
+        
+
+
+
+    
+    # for i in range(n-1):
+    #     node_height = 1
+    #     el = parents[i]
+
+    #     while el[1] != -1:
+    #         el = parents[el[1]]
+    #         node_height += 1
+
+    #     if max_height < node_height:
+    #         max_height = node_height
+
+
+    # return max_height
 
 
 def main():
-    # implement input form keyboard and from files
+    inputType = input()
+    elements = []
+    nodeCount = -1
+
+    if 'I' in inputType:
+        nodeCount = int(input())
+        elements = np.array([Node(ix, int(x), 0) for ix, x in enumerate(input().split(" "))])
+    elif 'F' in inputType:
+        fileName = input()
+
+        if 'a' in fileName:
+            return
+        
+        with open("./test/%s" % (fileName), "r") as file:
+            nodeCount = int(file.readline())
+            elements = np.array([Node(ix, int(x), 0) for ix, x in enumerate(file.readline().split(" "))])
     
-    # let user input file name to use, don't allow file names with letter a
-    # account for github input inprecision
+    if nodeCount == -1:
+        return
+
+    height = compute_height(nodeCount, elements)
     
-    # input number of elements
-    # input values in one variable, separate with space, split these values in an array
+    print(height)
     # call the function and output it's result
 
 
@@ -28,3 +88,7 @@ def main():
 sys.setrecursionlimit(10**7)  # max depth of recursion
 threading.stack_size(2**27)   # new thread will get stack of such size
 threading.Thread(target=main).start()
+
+# Driver Code
+if __name__ == "__main__":
+    main()
