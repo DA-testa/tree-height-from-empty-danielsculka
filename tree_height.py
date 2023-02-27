@@ -7,52 +7,36 @@ from collections import namedtuple
 
 Node = namedtuple("Node", ["node", "parent" , "height"])
 
-
-
-def compute_height(n, parents):
-    max_height = 0
-
-    for i in range(n-1):
-        node_height = 1
-        el = parents[i]
         
+def compute_height(n, parents):
+    for i in range(n-1):
+        el = parents[i]
+
         if el[2] != 0:
             continue
+        el[2] = 1
 
-        if parents[el[1]][2] != 0 :
-            el[2] = parents[el[1]][2]
-        
-        el[2] = node_height
-
-
+        path = np.array([el])
+        node_height = 1
         while el[1] != -1:
-            el = parents[el[1]]
-            if el[2] != 0:
+            parent = parents[el[1]]
+
+            if parent[2] != 0:
+                el[2] = parent[2] + 1
+                node_height = node_height + el[2] - 1
                 break
+            
+            el = parent
+            el[2] = 1
+            path = np.concatenate((path, [el]))
             node_height += 1
+            
+        for p in path:
+            el = parents[p[0]]
             el[2] = node_height
+            node_height -= 1
     
     return np.max(np.array([p[2] for p in parents]))
-
-
-        
-
-
-
-    
-    # for i in range(n-1):
-    #     node_height = 1
-    #     el = parents[i]
-
-    #     while el[1] != -1:
-    #         el = parents[el[1]]
-    #         node_height += 1
-
-    #     if max_height < node_height:
-    #         max_height = node_height
-
-
-    # return max_height
 
 
 def main():
