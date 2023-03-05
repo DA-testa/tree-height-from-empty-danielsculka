@@ -1,4 +1,5 @@
 # python3
+# Dāniels Čulka 221RDB304
 
 import sys
 import threading
