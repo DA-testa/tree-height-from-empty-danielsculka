@@ -1,25 +1,64 @@
 # python3
+# Dāniels Čulka 221RDB304
 
 import sys
 import threading
 
+class Node:
+  def __init__(self, node, parent):
+    self.node = node
+    self.parent = parent
+    self.height = 0
 
+        
 def compute_height(n, parents):
-    # Write this function
-    max_height = 0
-    # Your code here
-    return max_height
+    for i in range(n-1):
+        el = parents[i]
+
+        if el.height != 0:
+            continue
+
+        node_height = 1
+        path = [el]
+        while el.parent != -1:
+            el = parents[el.parent]
+
+            if el.height != 0:
+                node_height = node_height + el.height
+                break
+            
+            path.append(el)
+            node_height += 1
+            
+        for p in path:
+            p.height = node_height
+            node_height -= 1
+
+    return max([p.height for p in parents])
+
 
 
 def main():
-    # implement input form keyboard and from files
+    inputType = input()
+    elements = []
+    nodeCount = -1
+
+    if 'I' in inputType:
+        nodeCount = int(input())
+        elements = [Node(ix, int(x)) for ix, x in enumerate(input().split(" "))]
+    elif 'F' in inputType:
+        fileName = input()
+
+        if 'a' in fileName:
+            return
+        
+        with open("./test/%s" % (fileName), "r") as file:
+            nodeCount = int(file.readline())
+            elements = [Node(ix, int(x)) for ix, x in enumerate(file.readline().split(" "))]
+
+    height = compute_height(nodeCount, elements)
     
-    # let user input file name to use, don't allow file names with letter a
-    # account for github input inprecision
-    
-    # input number of elements
-    # input values in one variable, separate with space, split these values in an array
-    # call the function and output it's result
+    print(height)
 
 
 # In Python, the default limit on recursion depth is rather low,
